@@ -43,7 +43,7 @@ class ImageImporter:
             # Expand wildcards if present
             for file_path in glob.glob(source_pattern):
                 file_path = Path(file_path)
-                if file_path.is_file() and file_path.suffix.lower() in ['.jpg', '.jpeg', '.png', '.gif']:
+                if file_path.is_file() and file_path.suffix.lower() in ['.jpg', '.jpeg', '.png', '.gif', '.cr2']:
                     try:
                         # Get image date
                         image_date = self.get_image_date(file_path)

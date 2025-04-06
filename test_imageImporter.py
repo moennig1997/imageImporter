@@ -20,6 +20,7 @@ class TestImageImporter(unittest.TestCase):
         # Create test images with known dates
         self.create_test_image("test1.jpg", "2024:03:15 10:30:00")
         self.create_test_image("test2.jpg", "2024:03:16 15:45:00")
+        self.create_test_image("test3.CR2", "2024:03:17 12:00:00")  # CR2 file
         self.create_test_image("test_no_exif.jpg")  # Image without EXIF data
         
     def tearDown(self):
@@ -66,12 +67,13 @@ class TestImageImporter(unittest.TestCase):
         
     def test_import_images(self):
         """Test importing multiple images."""
-        importer = ImageImporter([str(self.source_dir / "*.jpg")], str(self.dest_dir))
+        importer = ImageImporter([str(self.source_dir / "*.jpg"), str(self.source_dir / "*.CR2")], str(self.dest_dir))
         importer.import_images()
         
         # Check if files were copied to correct directories
         self.assertTrue((self.dest_dir / "2024-03-15" / "test1.jpg").exists())
         self.assertTrue((self.dest_dir / "2024-03-16" / "test2.jpg").exists())
+        self.assertTrue((self.dest_dir / "2024-03-17" / "test3.CR2").exists())
         self.assertTrue(any(Path(self.dest_dir).glob("*/test_no_exif.jpg")))
         
     def test_import_specific_file(self):
