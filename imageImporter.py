@@ -30,13 +30,17 @@ class ImageImporter:
     def create_date_folder(self, date):
         """Create a folder with format yyyy-mm-dd."""
         folder_path = self.destination_dir / date.strftime('%Y-%m-%d')
-        folder_path.mkdir(parents=True, exist_ok=True)
+        if not folder_path.exists():
+            folder_path.mkdir(parents=True, exist_ok=True)
+            print(f"Created directory: {folder_path}")
         return folder_path
     
     def import_images(self):
         """Import all specified images to date-based folders."""
         # Create destination directory if it doesn't exist
-        self.destination_dir.mkdir(parents=True, exist_ok=True)
+        if not self.destination_dir.exists():
+            self.destination_dir.mkdir(parents=True, exist_ok=True)
+            print(f"Created destination directory: {self.destination_dir}")
         
         # Process all specified files
         for source_pattern in self.source_files:
@@ -51,8 +55,13 @@ class ImageImporter:
                         # Create destination folder
                         dest_folder = self.create_date_folder(image_date)
                         
-                        # Copy file to destination
+                        # Check if file already exists in destination
                         dest_path = dest_folder / file_path.name
+                        if dest_path.exists():
+                            print(f"Skipped {file_path.name}: File already exists in {dest_folder}")
+                            continue
+                        
+                        # Copy file to destination
                         shutil.copy2(file_path, dest_path)
                         print(f"Copied {file_path.name} to {dest_path}")
                         
